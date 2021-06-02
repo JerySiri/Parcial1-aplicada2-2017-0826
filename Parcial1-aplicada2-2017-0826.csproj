@@ -9,4 +9,8 @@
     <Folder Include="Data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Blazored.Toast" Version="3.1.2" />
+  </ItemGroup>
+
 </Project>
