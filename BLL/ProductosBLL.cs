@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Parcial1_aplicada2_2017_0826.BLL
 {
-    public class UsuariosBLL
+    public class ProductosBLL
     {
         public static bool Guardar(Productos producto)
         {

@@ -1,0 +1,75 @@
+﻿
+@using Parcial1_aplicada2_2017_0826.Models;
+@using Parcial1_aplicada2_2017_0826.BLL;
+
+@page "/Productos"
+@page "/Productos/{ProductosId:int}"
+
+@inject IToastService toast;
+
+<h3>R_Productos</h3>
+
+@code {
+
+    [Parameter]
+    public int ProductosId { get; set; }
+
+    private Productos producto = new Productos();
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+
+        Buscar();
+    }
+
+    public void Nuevo()
+    {
+        producto = new Productos();
+    }
+
+    private void Buscar()
+    {
+        if (producto.ProductoId > 0)
+        {
+            var encontrado = ProductosBLL.Buscar(producto.ProductoId);
+
+            if (encontrado != null)
+            {
+                this.producto = encontrado;
+            }
+            else
+            {
+                toast.ShowWarning("No se encontro el producto");
+            }
+        }
+
+    }
+
+    public void Guardar()
+    {
+        bool fueGuardado;
+
+        fueGuardado = ProductosBLL.Guardar(producto);
+
+        if (fueGuardado)
+        {
+            Nuevo();
+            toast.ShowSuccess("Fue Guardado Correctamente");
+        }
+        else
+        {
+            toast.ShowError("No fue guardado Correctamente");
+        }
+    }
+
+    public void Eliminar()
+    {
+        bool fueEliminado;
+
+        fueEliminado = ProductosBLL.
+
+    }
+
+
+}
