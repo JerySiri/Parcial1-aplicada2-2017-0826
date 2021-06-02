@@ -112,5 +112,34 @@ namespace Parcial1_aplicada2_2017_0826.BLL
 
             return producto;
         }
+
+        private static bool Eliminar(int id)
+        {
+            bool paso = false;
+            Contexto contexto = new Contexto();
+
+            try
+            {
+                var producto = contexto.Productos.Find();
+
+                if (producto != null)
+                {
+                    contexto.Productos.Remove(producto);
+                    paso = contexto.SaveChanges() > 0;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                contexto.Dispose();
+            }
+
+            return paso;
+
+        }
     }
 }
