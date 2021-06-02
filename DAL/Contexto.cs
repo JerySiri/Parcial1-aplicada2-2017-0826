@@ -10,7 +10,7 @@ namespace Parcial1_aplicada2_2017_0826.DAL
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Data Source= Data\Registros.db");
+            optionsBuilder.UseSqlite(@"Data Source= Data\Articulos.db");
         }
     }
 }
