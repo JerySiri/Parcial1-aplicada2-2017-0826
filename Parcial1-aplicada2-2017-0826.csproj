@@ -5,4 +5,8 @@
     <RootNamespace>Parcial1_aplicada2_2017_0826</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>
