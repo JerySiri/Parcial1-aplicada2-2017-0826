@@ -113,7 +113,7 @@ namespace Parcial1_aplicada2_2017_0826.BLL
             return producto;
         }
 
-        private static bool Eliminar(int id)
+        public static bool Eliminar(int id)
         {
             bool paso = false;
             Contexto contexto = new Contexto();
