@@ -6,8 +6,114 @@
 @page "/Productos/{ProductosId:int}"
 
 @inject IToastService toast;
+    
+<EditForm Model="producto" OnValidSubmit="Guardar">
+    
+    <DataAnnotationsValidator />
 
-<h3>R_Productos</h3>
+    <div class="card">
+
+        <div class="card-header">
+            
+            <h3>Registro de Productos</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            @*Producto Id y Boton Buscar*@
+            <div class="form-row">
+
+                <div class="col">
+                    <div class="form-group">
+
+                        <label class="form-label">ID</label>
+
+                        <div class="input-group">
+                            <InputNumber @bind-Value="producto.ProductoId" class="form-control col-5" />
+
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-info" onclick="Buscar">
+                                    <i class="oi oi-magnifying-glass"></i>
+                                    Buscar
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            @*Descripcion*@
+            <div class="form-group">
+
+                <label>Descripción</label>
+                <InputText @bind-Value=" producto.Descripcion" class="form-control col-6" />
+                <ValidationMessage For="@(() => producto.Descripcion)" />
+
+            </div>
+
+            @*Existencia*@
+            <div class="form-group">
+
+                <label>Existencia</label>
+                <InputNumber @bind-Value=" producto.Existencia" class="form-control col-6" />
+
+            </div>
+
+            @*Costo*@
+            <div class="form-group">
+
+                <label>Costo</label>
+                <InputNumber @bind-Value=" producto.Costos" class="form-control col-6" />
+
+            </div>
+
+            @*Existencia*@
+            <div class="form-group">
+
+                <label>Valor Inventario</label>
+                <InputNumber readonly @bind-Value=" producto.ValorInventario" class="form-control col-6" />
+
+            </div>
+
+        </div>
+
+        @*Botones*@
+        <div class="card-footer">
+            
+            <div class="form-group text-center" display: inline-block>
+                
+                @*Boton Nuevo*@
+                <button type="button" class="btn btn-lg btn-primary" @onclick =" Nuevo" >
+                    <i class="oi oi-magnifying-glass"></i>
+                    Nuevo
+                </button>
+
+                @*Boton Guardar*@
+                <button type="submit" class="btn btn-lg btb-success">
+                    <i class="oi oi-account-login" style="transform:rotate(90deg)"></i>
+                    Guardar
+                </button>
+
+                @*Boton Eliminar*@
+                <button type="button" class="btn btn-lg btn-danger" @onclick =" Eliminar">
+                    <i class="oi oi-trash mr-2"></i>
+                    Eliminar
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+        
+
+</EditForm>
+
 
 @code {
 
@@ -67,7 +173,17 @@
     {
         bool fueEliminado;
 
-        fueEliminado = ProductosBLL.
+        fueEliminado = ProductosBLL.Eliminar(producto.ProductoId);
+
+        if (fueEliminado)
+        {
+            Nuevo();
+            toast.ShowSuccess("Fue Eliminado Correctamente");
+        }
+        else
+        {
+            toast.ShowError("No fue Eliminado Correctamente");
+        }
 
     }
 
