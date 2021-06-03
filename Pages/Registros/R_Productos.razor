@@ -33,7 +33,7 @@
                             <InputNumber @bind-Value="producto.ProductoId" class="form-control col-5" />
 
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-info" onclick="Buscar">
+                                <button type="button" class="btn btn-info" @onclick="Buscar">
                                     <i class="oi oi-magnifying-glass"></i>
                                     Buscar
                                 </button>
@@ -156,6 +156,8 @@
     {
         bool fueGuardado;
 
+        CalcularValorInventario();
+
         fueGuardado = ProductosBLL.Guardar(producto);
 
         if (fueGuardado)
@@ -185,6 +187,11 @@
             toast.ShowError("No fue Eliminado Correctamente");
         }
 
+    }
+
+    private void CalcularValorInventario()
+    {
+        producto.ValorInventario = producto.Costos * producto.Existencia;
     }
 
 
