@@ -1,38 +1,233 @@
 ﻿
+@page "/ConsultaProducto"
+
 @using Parcial1_aplicada2_2017_0826.Models;
 @using Parcial1_aplicada2_2017_0826.BLL;
 
 @inject IToastService toast;
 
-<EditForm Model="" OnValidSubmit="">
+<div class="card">
 
-    <DataAnnotationsValidator />
+    <div class="card-header">
 
-    <div class="card">
+        <h3>Consulta de Productos</h3>
 
-        <div class="card-header">
-
-            <h3>Registro de Productos</h3>
-
+        @*Filtro*@
+        
+        <div class="form-group" >
+            <label>Filtro</label>
+            <div>
+                <select class="custom-select form-control col-6" @bind="Filtro">
+                    <option value="1"> Todos</option>
+                    <option value="2"> Id</option>
+                    <option value="3"> Descripción</option>
+                    <option value="4"> Existencia</option>
+                    <option value="5"> Costo</option>
+                    <option value="6"> Valor Inventario</option>
+                </select>
+            </div>
         </div>
 
-        <div class="card-body">
+        @*Consultar*@
+        <div class="form-row">
+
+            <div class="col">
+                <div class="form-group">
+
+                    <label class="form-label">Criterio</label>
+
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" @bind="Criterio" />
+
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-info" @onclick="ListaConCriterios">
+                                <i class="oi oi-magnifying-glass"></i>
+                                Consultar
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Existencia</th>
+                    <th scope="col">Costo</th>
+                    <th scope="col">Valor Inventario</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ListadoDeProducto in @lista)
+                {
+                    <tr>
+                        <td>@ListadoDeProducto.ProductoId</td>
+                        <td>@ListadoDeProducto.Descripcion</td>
+                        <td>@ListadoDeProducto.Existencia</td>
+                        <td>@ListadoDeProducto.Costos</td>
+                        <td>@ListadoDeProducto.ValorInventario</td>
+                        <td>
+                            <a type="button" href="@($"Productos/{ListadoDeProducto.ProductoId}")" class="btn btn-warning">
+                                <i class="oi oi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger" @onclick="() => EliminarProducto(ListadoDeProducto.ProductoId)">
+                                <i class="oi oi-trash"></i>
+                            </button>
+
+                        </td>
+                    </tr>
+
+                 }
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="card-footer">
+
+        @*Resultado*@
+        <div class="form-group">
+
+            <label>Resultado</label>
+            <input type="text" readonly class="form-control col-6" @bind="Resultado" />
 
         </div>
-
-
-        <div class="card-footer">
-
-
-
-        </div>
-
 
     </div>
 
 
-</EditForm>
+</div>
+
 
 @code {
+
+    public List<Productos> lista = new List<Productos>();
+    public string Criterio { get; set; } = "";
+    public float Resultado { get; set; }
+    public int Filtro { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+    }
+
+    public void Nuevo()
+    {
+
+        lista = new List<Productos>();
+    }
+
+    public void ListaConCriterios()
+    {
+
+        FiltrarLista();
+        CarcularLaSumatoriaDeValorInventario();
+    }
+
+    public void CarcularLaSumatoriaDeValorInventario()
+    {
+        Resultado = 0;
+        foreach (var ListadoDeProducto in @lista)
+        {
+            Resultado += ListadoDeProducto.ValorInventario;
+
+        }
+    }
+
+    public void EliminarProducto(int id)
+    {
+
+        bool fueEliminado;
+
+        fueEliminado = ProductosBLL.Eliminar(id);
+
+        if (fueEliminado)
+        {
+            toast.ShowSuccess("El Producto fue eliminado exitosamente.");
+        }else
+            toast.ShowError("No fue posible eliminar el Producto.");
+
+        FiltrarLista();
+    }
+
+    public void FiltrarLista()
+    {
+        switch (Filtro)
+        {
+
+            case 1:
+                lista = ProductosBLL.GetList(L => true);
+                break;
+
+            case 2: //id
+                int id;
+
+                if (Int32.TryParse(Criterio, out id))
+                {
+                    lista = ProductosBLL.GetList(L => L.ProductoId == id);
+                }
+                else
+                {
+                    toast.ShowError("El valor del criterio Id no es valido");
+                }
+
+                break;
+
+            case 3: // descripcion
+                lista = ProductosBLL.GetList(L => L.Descripcion.Contains(Criterio));
+                break;
+
+            case 4: // existencia
+                float existencia;
+                if (float.TryParse(Criterio, out existencia))
+                {
+                    lista = ProductosBLL.GetList(L => L.Existencia == existencia);
+                }
+                else
+                {
+                    toast.ShowError("El valor del criterio existencia no es valido");
+                }
+
+                break;
+
+            case 5: // Costo
+                float costo;
+                if (float.TryParse(Criterio, out costo))
+                {
+                    lista = ProductosBLL.GetList(L => L.Costos == costo);
+                }
+                else
+                {
+                    toast.ShowError("El valor del criterio costo no es valido");
+                }
+                break;
+
+            case 6: // ValorExistencia
+                float valorExistencia;
+                if (float.TryParse(Criterio, out valorExistencia))
+                {
+                    lista = ProductosBLL.GetList(L => L.ValorInventario == valorExistencia);
+                }
+                else
+                {
+                    toast.ShowError("El valor del criterio Valor existencia no es valido");
+                }
+                break;
+
+        }
+    }
 
 }
